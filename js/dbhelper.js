@@ -1,4 +1,5 @@
 const MAIN_OBJECT_STORE = "osRestaurant";
+const SERVER_PORT = 1337 // Change this to your server port
 
 /**
  * Common database helper functions.
@@ -8,9 +9,13 @@ class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
+
   static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${SERVER_PORT}/restaurants`;
+  }
+
+  static get REVIEWS_URL() {
+    return `http://localhost:${SERVER_PORT}/reviews`;
   }
 
   /**

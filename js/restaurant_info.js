@@ -200,9 +200,7 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-document.getElementById("post-review-btn").addEventListener("click", function(event){
-    event.preventDefault();
-
+document.getElementById("post-review-btn").addEventListener("click", function(){
     var reviewForm = document.getElementById("reviews-form");
     var reviewFormErr = document.getElementById("reviews-form-error");
 
@@ -216,4 +214,25 @@ document.getElementById("post-review-btn").addEventListener("click", function(ev
     } else {
       reviewFormErr.textContent = "";
     }
+
+    var fetchReviewsOption = {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "restaurant_id": idRestaurant,
+        "name": revName,
+        "rating": revRating,
+        "comments": revComments
+      })
+    }
+
+    fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
+    .then(response=> response.json())
+    .then(jsonData=>console.log(jsonData))
+    .catch(e=>{
+      console.log("Error on the review POST function. " + e)
+    })
 });
