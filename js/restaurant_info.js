@@ -199,3 +199,21 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+document.getElementById("post-review-btn").addEventListener("click", function(event){
+    event.preventDefault();
+
+    var reviewForm = document.getElementById("reviews-form");
+    var reviewFormErr = document.getElementById("reviews-form-error");
+
+    var idRestaurant = getParameterByName('id');
+    var revName = reviewForm.elements[0].value;
+    var revRating = reviewForm.elements[1].value;
+    var revComments = reviewForm.elements[2].value;
+
+    if(!revName || !revRating || !revComments) {
+      reviewFormErr.textContent = "All fields are required";
+    } else {
+      reviewFormErr.textContent = "";
+    }
+});

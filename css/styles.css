@@ -265,6 +265,28 @@ nav h1 a {
   margin: 0 auto;
   min-width: 265px;
 }
+#reviews-form {
+  margin-bottom: 2em;
+  padding-bottom: 2em;
+  border-bottom: 1px solid #eaeaea;
+}
+#reviews-form > h3
+{
+  text-transform: none;
+}
+#reviews-form-error {
+  color: red;
+  font-size: 1.1em;
+  margin-bottom: 1em;
+}
+#post-review-btn {
+  padding: 0.5em 1em;
+  font-size: 1.2em;
+  border: 0;
+}
+#reviews-form > button:hover {
+  cursor: pointer;
+}
 #reviews-list {
   margin: 0;
   padding: 0;

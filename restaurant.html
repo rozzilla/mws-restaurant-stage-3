@@ -1,89 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="theme-color" content="#055721">
-    <!-- Main CSS file -->
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <title>Restaurant Info</title>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/favicon.ico" />
-  </head>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="theme-color" content="#055721">
+	<!-- Main CSS file -->
+	<link rel="stylesheet" href="css/styles.css">
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<title>Restaurant Info</title>
+	<link rel="manifest" href="/manifest.json">
+	<link rel="shortcut icon" href="/favicon.ico" />
+</head>
 
-  <body class="inside font-lato color-black">
-    <div class="header-main-footer">
-      <!-- Beginning header -->
-      <header>
-        <!-- Beginning nav -->
-        <nav class="backg-black">
-          <h1 class="font-center">
-            <a title="Link to the restaurant reviews" tabindex="0" href="/" class="color-white">Restaurant Reviews</a>
-          </h1>
+<body class="inside font-lato color-black">
+	<div class="header-main-footer">
+		<!-- Beginning header -->
+		<header>
+			<!-- Beginning nav -->
+			<nav class="backg-black">
+				<h1 class="font-center">
+					<a title="Link to the restaurant reviews" tabindex="0" href="/" class="color-white">Restaurant Reviews</a>
+				</h1>
 
-          <!-- Beginning breadcrumb -->
-          <ul aria-label="Breadcrumb" id="breadcrumb" class="backg-silver">
-            <li>
-              <a title="Go to the homepage" tabindex="0" href="/" class="color-green">Home</a>
-            </li>
-          </ul>
-          <!-- End breadcrumb -->
-        </nav>
-        <!-- End nav -->
-      </header>
-      <!-- End header -->
+				<!-- Beginning breadcrumb -->
+				<ul aria-label="Breadcrumb" id="breadcrumb" class="backg-silver">
+					<li>
+						<a title="Go to the homepage" tabindex="0" href="/" class="color-green">Home</a>
+					</li>
+				</ul>
+				<!-- End breadcrumb -->
+			</nav>
+			<!-- End nav -->
+		</header>
+		<!-- End header -->
 
-      <!-- Beginning main -->
-      <main>
-        <!-- Beginning map -->
-        <aside>
-          <a href="#restaurant-name" class="skip-link" title="Skip the map and go to the restaurant name">
-            Skip to restaurant name
-          </a>
-          <div role="application" id="map"></div>
-        </aside>
-        <!-- End map -->
+		<!-- Beginning main -->
+		<main>
+			<!-- Beginning map -->
+			<aside>
+				<a href="#restaurant-name" class="skip-link" title="Skip the map and go to the restaurant name">
+					Skip to restaurant name
+				</a>
+				<div role="application" id="map"></div>
+			</aside>
+			<!-- End map -->
 
-        <!-- Beginning restaurant -->
-        <section id="restaurant-container">
-          <h2 tabindex="0" class="color-green" id="restaurant-name"></h2>
-          <figure>
-            <picture id="restaurant-picture"></picture>
-            <figcaption id="restaurant-cuisine" class="font-center backg-black color-white"></figcaption>
-          </figure>
-          <p tabindex="0" id="restaurant-address"></p>
-          <table id="restaurant-hours"></table>
-        </section>
-        <!-- end restaurant -->
+			<!-- Beginning restaurant -->
+			<section id="restaurant-container">
+				<h2 tabindex="0" class="color-green" id="restaurant-name"></h2>
+				<figure>
+					<picture id="restaurant-picture"></picture>
+					<figcaption id="restaurant-cuisine" class="font-center backg-black color-white"></figcaption>
+				</figure>
+				<p tabindex="0" id="restaurant-address"></p>
+				<table id="restaurant-hours"></table>
+			</section>
+			<!-- end restaurant -->
 
-        <!-- Beginning reviews -->
-        <section id="reviews-container">
-          <div id="reviews-list"></div>
-        </section>
-        <!-- End reviews -->
-      </main>
-      <!-- End main -->
+			<!-- Beginning reviews -->
+			<section id="reviews-container">
+				<div id="reviews-list"></div>
 
-      <!-- Beginning footer -->
-      <footer class="font-center color-white backg-black">
-        Copyright (c) 2017 <a title="Link to the restaurant reviews" tabindex="0" class="color-white" href="/">Restaurant Reviews</a> All Rights Reserved.
-      </footer>
-      <!-- End footer -->
-    </div>
+				<form id="reviews-form">
+					<h3 class="color-green">Write your review about this restaurant!</h3>
+					<label>Name</label><br>
+					<input class="font-lato" type="text" /><br><br>
 
-    <!-- Beginning scripts -->
-    <script src="js/idb.js"></script>
-    <!-- Database helpers -->
-    <script src="js/dbhelper.js"></script>
-    <!-- Main javascript file -->
-    <script src="js/restaurant_info.js"></script>
-    <!-- Function javascript file for both html pages -->
-    <script src="js/functions.js"></script>
-    <!-- Google Maps -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0TWxUezj2wX_MiRMV7Z4RBYHlWjwCI50&libraries=places&callback=initMap"></script>
-    <!-- End scripts -->
-  </body>
+					<label>Rating</label><br>
+					<select class="font-lato">
+						<option value="">Select a value</option>
+						<option value="1">1 point</option>
+						<option value="2">2 points</option>
+						<option value="3">3 points</option>
+						<option value="4">4 points</option>
+						<option value="5">5 points</option>
+					</select><br><br>
+
+					<label>Some comment about</label><br>
+					<textarea class="font-lato" cols="20" rows="5"></textarea><br>
+
+					<div id="reviews-form-error"></div>
+
+					<button id="post-review-btn" class="font-lato backg-green color-white" type="submit">Send your review</button>
+				</form>
+			</section>
+			<!-- End reviews -->
+		</main>
+		<!-- End main -->
+
+		<!-- Beginning footer -->
+		<footer class="font-center color-white backg-black">
+			Copyright (c) 2017 <a title="Link to the restaurant reviews" tabindex="0" class="color-white" href="/">Restaurant Reviews</a> All Rights Reserved.
+		</footer>
+		<!-- End footer -->
+	</div>
+
+	<!-- Beginning scripts -->
+	<script src="js/idb.js"></script>
+	<!-- Database helpers -->
+	<script src="js/dbhelper.js"></script>
+	<!-- Main javascript file -->
+	<script src="js/restaurant_info.js"></script>
+	<!-- Function javascript file for both html pages -->
+	<script src="js/functions.js"></script>
+	<!-- Google Maps -->
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0TWxUezj2wX_MiRMV7Z4RBYHlWjwCI50&libraries=places&callback=initMap"></script>
+	<!-- End scripts -->
+</body>
 </html>
