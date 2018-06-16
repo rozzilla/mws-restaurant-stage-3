@@ -1,4 +1,3 @@
-const MAIN_DB = "dbRestaurant";
 const MAIN_OBJECT_STORE = "osRestaurant";
 
 /**
