@@ -213,26 +213,26 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
       reviewFormErr.textContent = "All fields are required";
     } else {
       reviewFormErr.textContent = "";
-    }
+      reviewForm.reset();
 
-    var fetchReviewsOption = {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        "restaurant_id": idRestaurant,
-        "name": revName,
-        "rating": revRating,
-        "comments": revComments
+      var fetchReviewsOption = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "restaurant_id": idRestaurant,
+          "name": revName,
+          "rating": revRating,
+          "comments": revComments
+        })
+      }
+
+      fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
+      .then(response=> response.json())
+      .then(jsonData=>console.log(jsonData))
+      .catch(e=>{
+        console.log("Error on the review POST function. " + e)
       })
     }
-
-    fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
-    .then(response=> response.json())
-    .then(jsonData=>console.log(jsonData))
-    .catch(e=>{
-      console.log("Error on the review POST function. " + e)
-    })
 });
