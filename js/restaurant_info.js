@@ -120,7 +120,8 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = () => {
+
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -128,17 +129,20 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   title.setAttribute("tabindex","0");
   container.appendChild(title);
 
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
-  });
-  container.appendChild(ul);
+  getReviewsPromise(self.restaurant.id).then(reviews=>{
+    const ul = document.getElementById('reviews-list');
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
+
+    if (!reviews) {
+      const noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      container.appendChild(noReviews);
+      return;
+    }
+  }).catch(e=>console.log(e))
 }
 
 /**
@@ -236,3 +240,28 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
       })
     }
 });
+
+const getReviewsPromise = (idRest) => {
+  return new Promise((resolve,reject) => {
+    fetch(DBHelper.REVIEWS_URL + "?restaurant_id=" + idRest)
+    .then(res=> res.json())
+    .then(jsonRes=>{
+      reviewsData = [];
+      jsonRes.forEach(elem => {
+
+        var convertedDate = new Date(elem.createdAt).toLocaleDateString("en-US",{ year: 'numeric', month: 'long', day: 'numeric' });
+
+        reviewsData.push({
+          comments: elem.comments,
+          date: convertedDate,
+          name: elem.name,
+          rating: elem.rating
+        })
+      })
+      resolve(reviewsData);
+    })
+    .catch(e=>{
+      reject(Error("Error on fetch review function. " + e));
+    })
+  })
+}
