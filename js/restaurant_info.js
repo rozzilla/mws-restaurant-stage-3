@@ -1,5 +1,6 @@
 let restaurant;
 var map;
+const MAIN_REVIEWS_OS = "osReviews";
 
 /**
  * Initialize Google map, called from HTML.
@@ -121,8 +122,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = () => {
-  const MAIN_REVIEWS_OS = "osReviews";
-
   openIDB().then(function(db) {
     var tx = db.transaction(MAIN_REVIEWS_OS, 'readonly');
     var store = tx.objectStore(MAIN_REVIEWS_OS);
@@ -260,15 +259,29 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         })
       }
 
-      fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
-      .then(response=> response.json())
-      .then(jsonData=>{
-        document.getElementById("reviews-list").innerHTML = "";
-        fillReviewsHTML();
-      })
-      .catch(e=>{
-        console.log("Error on the review POST function. " + e)
-      })
+      if(navigator.onLine) {
+        fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
+        .then(response=> response.json())
+        .then(jsonData=>{
+            openIDB().then(function(db) {
+              var tx = db.transaction(MAIN_REVIEWS_OS, 'readwrite');
+              var store = tx.objectStore(MAIN_REVIEWS_OS);
+              store.put({
+                id: jsonData.id,
+                restaurant_id: idRestaurant,
+                name: revName,
+                rating: revRating,
+                comments: revComments,
+                date: convertDate(jsonData.createdAt)
+              });
+            }).then(location.reload());
+        })
+        .catch(e=>{
+          console.log("Error on the review POST function. " + e)
+        })
+      } else {
+        console.log("You're not online")
+      }
     }
 });
 
@@ -279,11 +292,7 @@ const getReviewsPromise = (idRest) => {
     .then(jsonRes=>{
       reviewsData = [];
       jsonRes.forEach(elem => {
-        var convertedDate = new Date(elem.createdAt).toLocaleDateString("en-US",{
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
+        var convertedDate = convertDate(elem.createdAt);
 
         reviewsData.push({
           id: elem.id,

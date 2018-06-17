@@ -9,8 +9,7 @@ if('serviceWorker' in navigator) {
 	});
 }
 
-function openIDB()
-{
+function openIDB() {
 	// Check for browser compatibility
 	if (!('indexedDB' in window)) {
 		console.log('IndexedDB is not supported on this browser');
@@ -26,4 +25,13 @@ function openIDB()
 				break;
 		}
 	});
+}
+
+function convertDate(originalDate) {
+	var convertedDate = new Date(originalDate).toLocaleDateString("en-US",{
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    return convertedDate;
 }
