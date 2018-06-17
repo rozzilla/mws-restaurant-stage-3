@@ -121,7 +121,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = () => {
-
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -234,7 +233,10 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
 
       fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
       .then(response=> response.json())
-      .then(jsonData=>console.log(jsonData))
+      .then(jsonData=>{
+        document.getElementById("reviews-list").innerHTML = "";
+        fillReviewsHTML();
+      })
       .catch(e=>{
         console.log("Error on the review POST function. " + e)
       })
