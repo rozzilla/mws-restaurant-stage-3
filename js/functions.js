@@ -20,7 +20,8 @@ function openIDB()
 	return idb.open('dbRestaurant', 1, function(upgradeDb){
 		switch(upgradeDb.oldVersion){
 			case 0:
-				var os = upgradeDb.createObjectStore('osRestaurant',{keyPath:'id'});
+				upgradeDb.createObjectStore('osRestaurant',{keyPath:'id'});
+				upgradeDb.createObjectStore('osReviews',{keyPath:'id'});
 			default:
 				break;
 		}

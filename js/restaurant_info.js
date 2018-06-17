@@ -121,6 +121,37 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = () => {
+  const MAIN_REVIEWS_OS = "osReviews";
+
+  openIDB().then(function(db) {
+    var tx = db.transaction(MAIN_REVIEWS_OS, 'readonly');
+    var store = tx.objectStore(MAIN_REVIEWS_OS);
+
+    store.getAll().then(idbData => {
+      if(idbData && idbData.length > 0) {
+        // JSON data are already present in IDB
+        addReviews(idbData);
+      } else {
+        getReviewsPromise(self.restaurant.id).then(reviewsData=>{
+          var tx = db.transaction(MAIN_REVIEWS_OS, 'readwrite');
+          var store = tx.objectStore(MAIN_REVIEWS_OS);
+
+          reviewsData.forEach(jsonElement => {
+            // Put every data of the JSON in the IDB
+            store.put(jsonElement);
+          });
+
+          store.getAll().then(idbData => {
+            // Get the data from the IDB now
+            addReviews(idbData);
+          })
+        }).catch(e=>console.log(e))
+      }
+    });
+  });
+}
+
+function addReviews(reviews) {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -128,20 +159,18 @@ fillReviewsHTML = () => {
   title.setAttribute("tabindex","0");
   container.appendChild(title);
 
-  getReviewsPromise(self.restaurant.id).then(reviews=>{
-    const ul = document.getElementById('reviews-list');
-    reviews.forEach(review => {
-      ul.appendChild(createReviewHTML(review));
-    });
-    container.appendChild(ul);
+  const ul = document.getElementById('reviews-list');
+  reviews.forEach(review => {
+    ul.appendChild(createReviewHTML(review));
+  });
+  container.appendChild(ul);
 
-    if (!reviews) {
-      const noReviews = document.createElement('p');
-      noReviews.innerHTML = 'No reviews yet!';
-      container.appendChild(noReviews);
-      return;
-    }
-  }).catch(e=>console.log(e))
+  if (!reviews) {
+    const noReviews = document.createElement('p');
+    noReviews.innerHTML = 'No reviews yet!';
+    container.appendChild(noReviews);
+    return;
+  }
 }
 
 /**
@@ -250,14 +279,19 @@ const getReviewsPromise = (idRest) => {
     .then(jsonRes=>{
       reviewsData = [];
       jsonRes.forEach(elem => {
-
-        var convertedDate = new Date(elem.createdAt).toLocaleDateString("en-US",{ year: 'numeric', month: 'long', day: 'numeric' });
+        var convertedDate = new Date(elem.createdAt).toLocaleDateString("en-US",{
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
 
         reviewsData.push({
+          id: elem.id,
           comments: elem.comments,
           date: convertedDate,
           name: elem.name,
-          rating: elem.rating
+          rating: elem.rating,
+          restaurant_id: idRest
         })
       })
       resolve(reviewsData);
