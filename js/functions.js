@@ -46,12 +46,12 @@ function getObjectStore(osName,connType,mainDb) {
 function getObjectReview(idRev,nameRev,commRev,dateRev,rateRev,restIdRev) {
 	var objReview = {};
 
-	objReview.id = idRev;
+	objReview.id = parseInt(idRev);
 	objReview.comments = commRev;
 	objReview.date = dateRev;
 	objReview.name = nameRev;
-	objReview.rating = rateRev;
-	objReview.restaurant_id = restIdRev;
+	objReview.rating = parseInt(rateRev);
+	objReview.restaurant_id = parseInt(restIdRev);
 
 	return objReview;
 }

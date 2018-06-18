@@ -264,11 +264,13 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
         .then(response=> response.json())
         .then(jsonData=>{
+          console.log(jsonData)
             openIDB().then(function(db) {
               var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
               var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
 
               storeRw.put(objectRev);
+              console.log(objectRev)
             }).then(location.reload());
         })
         .catch(e=>{
