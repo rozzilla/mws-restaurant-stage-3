@@ -95,7 +95,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  getAllReviews();
 }
 
 /**
@@ -118,17 +118,14 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
-/**
- * Create all reviews HTML and add them to the webpage.
- */
-fillReviewsHTML = () => {
+getAllReviews = () => {
   openIDB().then(function(db) {
     var storeRo = getObjectStore(MAIN_REVIEWS_OS,'readonly',db);
 
     storeRo.getAll().then(idbData => {
       if(idbData && idbData.length > 0) {
         // JSON data are already present in IDB
-        addReviews(idbData);
+        fillReviewsHTML(idbData);
       } else {
         getReviewsPromise(self.restaurant.id).then(reviewsData=>{
           var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
@@ -140,7 +137,7 @@ fillReviewsHTML = () => {
 
           storeRw.getAll().then(idbData => {
             // Get the data from the IDB now
-            addReviews(idbData);
+            fillReviewsHTML(idbData);
           })
         }).catch(e=>console.log(e))
       }
@@ -148,7 +145,10 @@ fillReviewsHTML = () => {
   });
 }
 
-function addReviews(reviews) {
+/**
+ * Create all reviews HTML and add them to the webpage.
+ */
+function fillReviewsHTML(reviews) {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
