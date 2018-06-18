@@ -123,24 +123,22 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = () => {
   openIDB().then(function(db) {
-    var tx = db.transaction(MAIN_REVIEWS_OS, 'readonly');
-    var store = tx.objectStore(MAIN_REVIEWS_OS);
+    var storeRo = getObjectStore(MAIN_REVIEWS_OS,'readonly',db);
 
-    store.getAll().then(idbData => {
+    storeRo.getAll().then(idbData => {
       if(idbData && idbData.length > 0) {
         // JSON data are already present in IDB
         addReviews(idbData);
       } else {
         getReviewsPromise(self.restaurant.id).then(reviewsData=>{
-          var tx = db.transaction(MAIN_REVIEWS_OS, 'readwrite');
-          var store = tx.objectStore(MAIN_REVIEWS_OS);
+          var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
 
           reviewsData.forEach(jsonElement => {
             // Put every data of the JSON in the IDB
-            store.put(jsonElement);
+            storeRw.put(jsonElement);
           });
 
-          store.getAll().then(idbData => {
+          storeRw.getAll().then(idbData => {
             // Get the data from the IDB now
             addReviews(idbData);
           })
@@ -264,16 +262,10 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         .then(response=> response.json())
         .then(jsonData=>{
             openIDB().then(function(db) {
-              var tx = db.transaction(MAIN_REVIEWS_OS, 'readwrite');
-              var store = tx.objectStore(MAIN_REVIEWS_OS);
-              store.put({
-                id: jsonData.id,
-                restaurant_id: idRestaurant,
-                name: revName,
-                rating: revRating,
-                comments: revComments,
-                date: convertDate(jsonData.createdAt)
-              });
+              var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
+              var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
+
+              storeRw.put(objectRev);
             }).then(location.reload());
         })
         .catch(e=>{
@@ -292,16 +284,9 @@ const getReviewsPromise = (idRest) => {
     .then(jsonRes=>{
       reviewsData = [];
       jsonRes.forEach(elem => {
-        var convertedDate = convertDate(elem.createdAt);
+        var revObj = getObjectReview(elem.id,elem.name,elem.comments,convertDate(elem.createdAt),elem.rating,idRest);
 
-        reviewsData.push({
-          id: elem.id,
-          comments: elem.comments,
-          date: convertedDate,
-          name: elem.name,
-          rating: elem.rating,
-          restaurant_id: idRest
-        })
+        reviewsData.push(revObj);
       })
       resolve(reviewsData);
     })

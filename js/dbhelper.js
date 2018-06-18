@@ -23,10 +23,9 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     openIDB().then(function(db) {
-      var tx = db.transaction(MAIN_OBJECT_STORE, 'readonly');
-      var store = tx.objectStore(MAIN_OBJECT_STORE);
+      var storeRo = getObjectStore(MAIN_OBJECT_STORE,'readonly',db);
 
-      store.getAll().then(idbData => {
+      storeRo.getAll().then(idbData => {
         if(idbData && idbData.length > 0) {
           // JSON data are already present in IDB
           callback(null, idbData);
@@ -36,16 +35,16 @@ class DBHelper {
           xhr.open('GET', DBHelper.DATABASE_URL);
           xhr.onload = () => {
             if (xhr.status === 200) { // Got a success response from server!
-              var tx = db.transaction(MAIN_OBJECT_STORE, 'readwrite');
-              var store = tx.objectStore(MAIN_OBJECT_STORE);
+              var storeRw = getObjectStore(MAIN_OBJECT_STORE,'readwrite',db);
+
               const jsonData = JSON.parse(xhr.responseText);
 
               jsonData.forEach(jsonElement => {
                 // Put every data of the JSON in the IDB
-                store.put(jsonElement);
+                storeRw.put(jsonElement);
               });
 
-              store.getAll().then(idbData => {
+              storeRw.getAll().then(idbData => {
                 // Get the data from the IDB now
                 callback(null, idbData);
               })

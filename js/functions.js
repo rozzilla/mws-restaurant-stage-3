@@ -35,3 +35,22 @@ function convertDate(originalDate) {
     });
     return convertedDate;
 }
+
+function getObjectStore(osName,connType,mainDb) {
+	var tx = mainDb.transaction(osName,connType);
+	var store = tx.objectStore(osName);
+	return store;
+}
+
+function getObjectReview(idRev,nameRev,commRev,dateRev,rateRev,restIdRev) {
+	var objReview = {};
+
+	objReview.id = idRev;
+	objReview.comments = commRev;
+	objReview.date = dateRev;
+	objReview.name = nameRev;
+	objReview.rating = rateRev;
+	objReview.restaurant_id = restIdRev;
+
+	return objReview;
+}
