@@ -121,8 +121,9 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 getAllReviews = () => {
   openIDB().then(function(db) {
     var storeRo = getObjectStore(MAIN_REVIEWS_OS,'readonly',db);
+    var indexStoreRo = storeRo.index("restaurant_id").getAll(self.restaurant.id);
 
-    storeRo.getAll().then(idbData => {
+    indexStoreRo.then(idbData => {
       if(idbData && idbData.length > 0) {
         // JSON data are already present in IDB
         fillReviewsHTML(idbData);
@@ -135,7 +136,9 @@ getAllReviews = () => {
             storeRw.put(jsonElement);
           });
 
-          storeRw.getAll().then(idbData => {
+          var indexStoreRw = storeRw.index("restaurant_id").getAll(self.restaurant.id);
+
+          indexStoreRw.then(idbData => {
             // Get the data from the IDB now
             fillReviewsHTML(idbData);
           })
