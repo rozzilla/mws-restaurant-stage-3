@@ -14,3 +14,15 @@ self.addEventListener('fetch', function(event) {
 		})
 	);
 });
+
+self.addEventListener('sync', function(event) {
+  if (event.tag == 'backgSync') {
+    event.waitUntil(updateOfflineReviews());
+  }
+});
+
+function updateOfflineReviews() {
+	if(navigator.onLine) {
+		console.log("Background sync is working")
+	}
+}
