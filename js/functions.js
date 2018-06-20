@@ -20,6 +20,7 @@ function openIDB() {
 		switch(upgradeDb.oldVersion){
 			case 0:
 				upgradeDb.createObjectStore('osRestaurant',{keyPath:'id'});
+				upgradeDb.createObjectStore('osOfflineReviews',{keyPath:'id'});
 				var objStoReviews = upgradeDb.createObjectStore('osReviews',{keyPath:'id'});
 				objStoReviews.createIndex('restaurant_id','restaurant_id',{unique: false});
 			default:

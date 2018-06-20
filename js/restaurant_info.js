@@ -1,7 +1,7 @@
 let restaurant;
 var map;
 const MAIN_REVIEWS_OS = "osReviews";
-
+const OFFLINE_REVIEWS_OS = "osOfflineReviews";
 /**
  * Initialize Google map, called from HTML.
  */
@@ -126,7 +126,13 @@ getAllReviews = () => {
     indexStoreRo.then(idbData => {
       if(idbData && idbData.length > 0) {
         // JSON data are already present in IDB
-        fillReviewsHTML(idbData);
+        var offlineStoreRo = getObjectStore(OFFLINE_REVIEWS_OS,'readonly',db);
+        offlineStoreRo.getAll().then(offlineIdbData=>{
+          for(var singleData in offlineIdbData) {
+            idbData.push(offlineIdbData[singleData]);
+          }
+          fillReviewsHTML(idbData);
+        });
       } else {
         getReviewsPromise(self.restaurant.id).then(reviewsData=>{
           var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
@@ -264,20 +270,25 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
         .then(response=> response.json())
         .then(jsonData=>{
-          console.log(jsonData)
             openIDB().then(function(db) {
               var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
               var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
 
               storeRw.put(objectRev);
-              console.log(objectRev)
             }).then(location.reload());
         })
         .catch(e=>{
           console.log("Error on the review POST function. " + e)
         })
       } else {
-        console.log("You're not online")
+        openIDB().then(function(db) {
+          var storeRw = getObjectStore(OFFLINE_REVIEWS_OS,'readwrite',db);
+
+          storeRw.count().then(numRows=>{
+            var objectRev = getObjectReview(numRows,revName,revComments,convertDate(new Date()),revRating,idRestaurant);
+            storeRw.put(objectRev);
+          });
+        }).then(location.reload());
       }
     }
 });
