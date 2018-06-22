@@ -18,6 +18,14 @@ class DBHelper {
     return `http://localhost:${SERVER_PORT}/reviews`;
   }
 
+  static get MAIN_REVIEWS_OS() {
+    return "osReviews";
+  }
+
+  static get OFFLINE_REVIEWS_OS() {
+    return "osOfflineReviews";
+  }
+
   /**
    * Fetch all restaurants.
    */

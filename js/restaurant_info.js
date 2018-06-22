@@ -1,7 +1,6 @@
 let restaurant;
 var map;
-const MAIN_REVIEWS_OS = "osReviews";
-const OFFLINE_REVIEWS_OS = "osOfflineReviews";
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -120,14 +119,14 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 
 getAllReviews = () => {
   openIDB().then(function(db) {
-    var storeRo = getObjectStore(MAIN_REVIEWS_OS,'readonly',db);
+    var storeRo = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readonly',db);
     var indexStoreRo = storeRo.index("restaurant_id").getAll(self.restaurant.id);
 
     indexStoreRo.then(idbData => {
       if(idbData && idbData.length > 0) {
         // JSON data are already present in IDB
-        var offlineStoreRo = getObjectStore(OFFLINE_REVIEWS_OS,'readonly',db);
-        offlineStoreRo.getAll().then(offlineIdbData=>{
+        var offlineStoreRo = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readonly',db);
+        offlineStoreRo.index("restaurant_id").getAll(self.restaurant.id).then(offlineIdbData=>{
           for(var singleData in offlineIdbData) {
             idbData.push(offlineIdbData[singleData]);
           }
@@ -135,7 +134,7 @@ getAllReviews = () => {
         });
       } else {
         getReviewsPromise(self.restaurant.id).then(reviewsData=>{
-          var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
+          var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
 
           reviewsData.forEach(jsonElement => {
             // Put every data of the JSON in the IDB
@@ -271,7 +270,7 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         .then(response=> response.json())
         .then(jsonData=>{
             openIDB().then(function(db) {
-              var storeRw = getObjectStore(MAIN_REVIEWS_OS,'readwrite',db);
+              var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
               var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
 
               storeRw.put(objectRev);
@@ -281,12 +280,15 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
           console.log("Error on the review POST function. " + e)
         })
       } else {
+        console.log("offline")
+        // I'm offline
         openIDB().then(function(db) {
-          var storeRw = getObjectStore(OFFLINE_REVIEWS_OS,'readwrite',db);
+          var storeRw = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readwrite',db);
 
           storeRw.count().then(numRows=>{
             var objectRev = getObjectReview(numRows,revName,revComments,convertDate(new Date()),revRating,idRestaurant);
             storeRw.put(objectRev);
+            console.log(objectRev)
           });
         }).then(location.reload());
       }
