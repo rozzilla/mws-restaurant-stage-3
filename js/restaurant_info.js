@@ -23,6 +23,7 @@ window.initMap = () => {
     }
   });
 }
+
 /**
  * Get current restaurant from page URL.
  */
@@ -117,19 +118,25 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
+/**
+ * Get the reviews checking firstly on the os (offline and online).
+ * If the IDB is empty, fetch reviews from network and add to the IDB.
+ */
 getAllReviews = () => {
   openIDB().then(function(db) {
     var storeRo = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readonly',db);
     var indexStoreRo = storeRo.index("restaurant_id").getAll(self.restaurant.id);
 
     indexStoreRo.then(idbData => {
+      // If there are JSON reviews already present in IDB
       if(idbData && idbData.length > 0) {
-        // JSON data are already present in IDB
+        // I firstly check for any offline reviews
         var offlineStoreRo = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readonly',db);
         offlineStoreRo.index("restaurant_id").getAll(self.restaurant.id).then(offlineIdbData=>{
           for(var singleData in offlineIdbData) {
             idbData.push(offlineIdbData[singleData]);
           }
+
           fillReviewsHTML(idbData);
         });
       } else {
@@ -237,62 +244,9 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-document.getElementById("post-review-btn").addEventListener("click", function(){
-    var reviewForm = document.getElementById("reviews-form");
-    var reviewFormErr = document.getElementById("reviews-form-error");
-
-    var idRestaurant = getParameterByName('id');
-    var revName = reviewForm.elements[0].value;
-    var revRating = reviewForm.elements[1].value;
-    var revComments = reviewForm.elements[2].value;
-
-    if(!revName || !revRating || !revComments) {
-      reviewFormErr.textContent = "All fields are required";
-    } else {
-      reviewFormErr.textContent = "";
-      reviewForm.reset();
-
-      var fetchReviewsOption = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          "restaurant_id": idRestaurant,
-          "name": revName,
-          "rating": revRating,
-          "comments": revComments
-        })
-      }
-
-      if(navigator.onLine) {
-        fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
-        .then(response=> response.json())
-        .then(jsonData=>{
-          openIDB().then(function(db) {
-            var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
-            var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
-
-            storeRw.put(objectRev);
-          }).then(location.reload());
-        })
-        .catch(e=>{
-          console.log("Error on the review POST function. " + e)
-        })
-      } else {
-        // I'm offline
-        openIDB().then(function(db) {
-          var storeRw = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readwrite',db);
-
-          storeRw.count().then(numRows=>{
-            var objectRev = getObjectReview(numRows,revName,revComments,convertDate(new Date()),revRating,idRestaurant);
-            storeRw.put(objectRev);
-          });
-        }).then(location.reload());
-      }
-    }
-});
-
+/**
+ * Get reviews data of single restaurant from JSON request.
+ */
 const getReviewsPromise = (idRest) => {
   return new Promise((resolve,reject) => {
     fetch(DBHelper.REVIEWS_URL + "?restaurant_id=" + idRest)
@@ -310,3 +264,64 @@ const getReviewsPromise = (idRest) => {
     })
   })
 }
+
+document.getElementById("post-review-btn").addEventListener("click", function(){
+    var reviewForm = document.getElementById("reviews-form");
+    var reviewFormErr = document.getElementById("reviews-form-error");
+
+    var idRestaurant = getParameterByName('id');
+    var revName = reviewForm.elements[0].value;
+    var revRating = reviewForm.elements[1].value;
+    var revComments = reviewForm.elements[2].value;
+
+    // Form control
+    if(!revName || !revRating || !revComments) {
+      reviewFormErr.textContent = "All fields are required";
+    } else {
+      // Control form passed
+      reviewFormErr.textContent = "";
+      reviewForm.reset();
+
+      if(navigator.onLine) {
+        var fetchReviewsOption = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "restaurant_id": idRestaurant,
+            "name": revName,
+            "rating": revRating,
+            "comments": revComments
+          })
+        }
+
+        // If I'm online I do a POST request
+        fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
+        .then(response=> response.json())
+        .then(jsonData=>{
+          openIDB().then(function(db) {
+            // Then I connect do the os and I use the return id and createdAt JSON data to store the information on the os
+            var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
+            var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
+
+            storeRw.put(objectRev);
+          }).then(location.reload());
+        })
+        .catch(e=>{
+          console.log("Error on the review POST function. " + e)
+        })
+      } else {
+        // I'm offline
+        openIDB().then(function(db) {
+          var storeRw = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readwrite',db);
+
+          // So, I add this review data to the offline os
+          storeRw.count().then(numRows=>{
+            var objectRev = getObjectReview(numRows,revName,revComments,convertDate(new Date()),revRating,idRestaurant);
+            storeRw.put(objectRev);
+          });
+        }).then(location.reload());
+      }
+    }
+});
