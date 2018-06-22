@@ -33,29 +33,25 @@ function updateOfflineReviews() {
 				if(numRows>0) {
 					storeRo.getAll().then(idbData=>{
 						for(var idx in idbData) {
-							var revName = idbData[idx].name;
-							var revComments = idbData[idx].comments;
-							var revRating = idbData[idx].rating;
-							var idRestaurant = idbData[idx].restaurant_id;
-
 							var fetchReviewsOption = {
 								method: "POST",
 								headers: {
 									"Content-Type": "application/json"
 								},
 								body: JSON.stringify({
-									"restaurant_id": idRestaurant,
-									"name": revName,
-									"rating": revRating,
-									"comments": revComments
+									"restaurant_id": idbData[idx].restaurant_id,
+									"name": idbData[idx].name,
+									"rating": idbData[idx].rating,
+									"comments": idbData[idx].comments
 								})
 							}
 
+							// For each rows in the offline os, create POST request
 							fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
 							.then(response=> response.json())
 							.then(jsonData=>{
 								openIDB().then(function(db) {
-									// Save the data on the main reviews os
+									// Save the row on the main reviews os, so I can view the review after that the offline os is clear
 									var mainStoreRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
 									var objectRev = getObjectReview(jsonData.id,jsonData.name,jsonData.comments,convertDate(jsonData.createdAt),jsonData.rating,jsonData.restaurant_id);
 
