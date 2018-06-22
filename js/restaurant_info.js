@@ -269,18 +269,17 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
         fetch(DBHelper.REVIEWS_URL,fetchReviewsOption)
         .then(response=> response.json())
         .then(jsonData=>{
-            openIDB().then(function(db) {
-              var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
-              var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
+          openIDB().then(function(db) {
+            var storeRw = getObjectStore(DBHelper.MAIN_REVIEWS_OS,'readwrite',db);
+            var objectRev = getObjectReview(jsonData.id,revName,revComments,convertDate(jsonData.createdAt),revRating,idRestaurant);
 
-              storeRw.put(objectRev);
-            }).then(location.reload());
+            storeRw.put(objectRev);
+          }).then(location.reload());
         })
         .catch(e=>{
           console.log("Error on the review POST function. " + e)
         })
       } else {
-        console.log("offline")
         // I'm offline
         openIDB().then(function(db) {
           var storeRw = getObjectStore(DBHelper.OFFLINE_REVIEWS_OS,'readwrite',db);
@@ -288,7 +287,6 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
           storeRw.count().then(numRows=>{
             var objectRev = getObjectReview(numRows,revName,revComments,convertDate(new Date()),revRating,idRestaurant);
             storeRw.put(objectRev);
-            console.log(objectRev)
           });
         }).then(location.reload());
       }
@@ -302,8 +300,7 @@ const getReviewsPromise = (idRest) => {
     .then(jsonRes=>{
       reviewsData = [];
       jsonRes.forEach(elem => {
-        var revObj = getObjectReview(elem.id,elem.name,elem.comments,convertDate(elem.createdAt),elem.rating,idRest);
-
+        var revObj = getObjectReview(elem.id,elem.name,elem.comments,convertDate(elem.createdAt),elem.rating,elem.restaurant_id);
         reviewsData.push(revObj);
       })
       resolve(reviewsData);

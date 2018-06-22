@@ -14,11 +14,11 @@ if('serviceWorker' in navigator) {
 }
 
 function openIDB() {
-	// Check for browser compatibility
+	/* Check for browser compatibility
 	if (!('indexedDB' in window)) {
 		console.log('IndexedDB is not supported on this browser');
 		return;
-	}
+	}*/
 
 	return idb.open('dbRestaurant', 1, function(upgradeDb){
 		switch(upgradeDb.oldVersion){
