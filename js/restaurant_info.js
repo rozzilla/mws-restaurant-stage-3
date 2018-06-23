@@ -376,3 +376,9 @@ document.getElementById("post-review-btn").addEventListener("click", function(){
       }
     }
 });
+
+document.getElementById("show-map").addEventListener("click", function(){
+  document.querySelector(".skip-link").style.display = "block";
+  document.getElementById("map").style.display = "block";
+  document.getElementById("show-map").style.display = "none";
+});

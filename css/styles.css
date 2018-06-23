@@ -154,9 +154,6 @@ nav h1 a {
   width: 100%;
   background-color: #ccc;
 }
-#container-map {
-  display: none;
-}
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
@@ -364,6 +361,9 @@ nav h1 a {
   font-style: italic;
   font-size: 0.9em;
   padding: 0 2em;
+}
+.inside .skip-link, .inside #map, #container-map {
+  display: none;
 }
 
 @media only screen and (min-width:550px) {
