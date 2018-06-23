@@ -145,10 +145,17 @@ nav h1 a {
     color: #01447e;
 }
 /* ====================== Map ====================== */
+#show-map > div {
+  padding: 8em 0;
+  width: 100%;
+}
 #map {
   height: 400px;
   width: 100%;
   background-color: #ccc;
+}
+#container-map {
+  display: none;
 }
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {

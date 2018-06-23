@@ -108,6 +108,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
         aFav.innerHTML = '❤ Add to favorites!';
         aFav.setAttribute("onclick",`addToFavorites(${restaurant.id})`);
         aFav.setAttribute("id","addto-favorites");
+        aFav.setAttribute("href","#add-favorites-box");
         aFav.setAttribute("class","color-white backg-green font-center");
         aFav.setAttribute("title","Add the " + restaurant.name + " restaurant to your favorites!");
         favorites.append(aFav)
@@ -291,26 +292,28 @@ const getReviewsPromise = (idRest) => {
 }
 
 function addToFavorites(idRes) {
-  var fetchReviewsOption = {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
+  if(navigator.onLine) {
+    var fetchReviewsOption = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
-  }
 
-  fetch(DBHelper.getFavoritePutUrl(idRes),fetchReviewsOption)
-  .then(response=> response.json())
-  .then(jsonData=>{
-    openIDB().then(function(db) {
-      var storeRw = getObjectStore(DBHelper.FAV_RESTAURANTS_OS,'readwrite',db);
-      storeRw.put({
-        id: idRes
+    fetch(DBHelper.getFavoritePutUrl(idRes),fetchReviewsOption)
+    .then(response=> response.json())
+    .then(jsonData=>{
+      openIDB().then(function(db) {
+        var storeRw = getObjectStore(DBHelper.FAV_RESTAURANTS_OS,'readwrite',db);
+        storeRw.put({
+          id: idRes
+        });
       });
-    });
-  }).then(location.reload())
-  .catch(e=>{
-    console.log("Error on the review POST function. " + e)
-  })
+    }).then(location.reload())
+    .catch(e=>{
+      console.log("Error on the review POST function. " + e)
+    })
+  }
 }
 
 document.getElementById("post-review-btn").addEventListener("click", function(){

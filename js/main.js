@@ -193,3 +193,8 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 }
+
+document.getElementById("show-map").addEventListener("click", function(){
+  document.getElementById("container-map").style.display = "block";
+  document.getElementById("show-map").style.display = "none";
+});
