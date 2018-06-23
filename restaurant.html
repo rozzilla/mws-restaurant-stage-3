@@ -41,7 +41,7 @@
 			<!-- Beginning map -->
 			<aside>
 				<a href="#container-map" id="show-map" title="Show map">
-	            	<div class="backg-green font-center color-white">Click here to <strong>show the map</strong></div>
+	            	<div class="backg-green font-center color-white">Click here to show the map</div>
 	         	</a>
 				<a href="#restaurant-name" class="skip-link" title="Skip the map and go to the restaurant name">
 					Skip to restaurant name
@@ -70,11 +70,11 @@
 
 				<form class="font-center" id="reviews-form">
 					<h3 class="color-green">Write your review about this restaurant!</h3>
-					<label>Name</label><br>
-					<input class="font-lato" type="text" /><br><br>
+					<label for="name">Name</label><br>
+					<input id="name" class="font-lato" type="text" /><br><br>
 
-					<label>Rating</label><br>
-					<select class="font-lato">
+					<label for="rating">Rating</label><br>
+					<select id="rating" class="font-lato">
 						<option value="">Select a value</option>
 						<option value="1">1 point</option>
 						<option value="2">2 points</option>
@@ -83,8 +83,8 @@
 						<option value="5">5 points</option>
 					</select><br><br>
 
-					<label>Some comment about</label><br>
-					<textarea class="font-lato" cols="20" rows="5"></textarea><br>
+					<label for="comments">Some comment about</label><br>
+					<textarea id="comments" class="font-lato" cols="20" rows="5"></textarea><br>
 
 					<div id="reviews-form-error"></div>
 
