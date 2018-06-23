@@ -27,6 +27,13 @@ class DBHelper {
   }
 
   /**
+   * Return the url to add a restaurant to the favorites
+   */
+  static getFavoritePutUrl(idRestaurant) {
+    return `http://localhost:${SERVER_PORT}/restaurants/${idRestaurant}/?is_favorite=true`;
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {

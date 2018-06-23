@@ -63,12 +63,13 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.setAttribute("class","color-green");
   address.innerHTML = restaurant.address;
 
-  const favorites = document.getElementById('add-favorites');
+  const favorites = document.getElementById('add-favorites-box');
 
   const aFav = document.createElement('a');
-  aFav.innerHTML = '❤ Add to your favorites!';
-  aFav.setAttribute("data-id-rest",restaurant.id);
-  aFav.setAttribute("class","color-white backg-green font-center a-favorite");
+  aFav.innerHTML = '❤ Add to favorites!';
+  aFav.setAttribute("onclick",`addToFavorites(${restaurant.id})`);
+  aFav.setAttribute("id","addto-favorites");
+  aFav.setAttribute("class","color-white backg-green font-center");
   aFav.setAttribute("title","Add the " + restaurant.name + " restaurant to your favorites!");
   favorites.append(aFav)
 
@@ -271,6 +272,24 @@ const getReviewsPromise = (idRest) => {
     .catch(e=>{
       reject(Error("Error on fetch review function. " + e));
     })
+  })
+}
+
+function addToFavorites(idRes) {
+  var fetchReviewsOption = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+
+  fetch(DBHelper.getFavoritePutUrl(idRes),fetchReviewsOption)
+  .then(response=> response.json())
+  .then(jsonData=>{
+    console.log(jsonData)
+  })
+  .catch(e=>{
+    console.log("Error on the review POST function. " + e)
   })
 }
 

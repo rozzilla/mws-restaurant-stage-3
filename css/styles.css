@@ -266,7 +266,7 @@ nav h1 a {
   margin: 0 auto;
   min-width: 265px;
 }
-#reviews-form, #add-favorites {
+#reviews-form, #add-favorites-box {
   margin-bottom: 2em;
   padding-bottom: 2em;
   border-bottom: 1px solid #eaeaea;
@@ -275,12 +275,16 @@ nav h1 a {
 {
   text-transform: none;
 }
+#reviews-form > input[type=text], #reviews-form > select, #reviews-form > textarea {
+  padding: 0.5em;
+  box-sizing: border-box;
+}
 #reviews-form-error {
   color: red;
   font-size: 1.1em;
   margin-bottom: 1em;
 }
-#post-review-btn, .a-favorite {
+#post-review-btn, #addto-favorites {
   padding: 0.5em 1em;
   font-size: 1.2em;
   border: 0;
