@@ -173,7 +173,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  more.setAttribute("class","color-white backg-green");
+  more.setAttribute("class","color-white backg-green font-center a-know-more");
   more.setAttribute("title","Know more about the " + restaurant.name + " restaurant");
   li.append(more)
 

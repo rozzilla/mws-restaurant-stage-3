@@ -63,6 +63,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.setAttribute("class","color-green");
   address.innerHTML = restaurant.address;
 
+  const favorites = document.getElementById('add-favorites');
+
+  const aFav = document.createElement('a');
+  aFav.innerHTML = '❤ Add to your favorites!';
+  aFav.setAttribute("data-id-rest",restaurant.id);
+  aFav.setAttribute("class","color-white backg-green font-center a-favorite");
+  aFav.setAttribute("title","Add the " + restaurant.name + " restaurant to your favorites!");
+  favorites.append(aFav)
+
   const picture = document.getElementById('restaurant-picture');
 
   const source950px = document.createElement('source');

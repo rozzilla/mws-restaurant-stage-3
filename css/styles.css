@@ -18,6 +18,7 @@ a {
 }
 a:hover, a:focus {
 	color: #252831;
+  cursor: pointer;
   background-color: white;
   text-decoration: none;
 }
@@ -41,7 +42,6 @@ h1 {
 }
 h2 {
   font-size: 1.1em;
-  font-weight: normal;
   line-height: 1;
   margin: 0.5em;
 }
@@ -200,17 +200,18 @@ nav h1 a {
   font-size: 0.9em;
   padding: 0.25em 0.5em;
 }
-#restaurants-list li a {
+.a-know-more {
   position: absolute;
-  left: 0;
   bottom: 0;
   margin-top: 1em;
   letter-spacing: 0.3px;
   padding: 0.7em 2em;
   font-weight: bold;
-  text-align: center;
   text-decoration: none;
   text-transform: uppercase;
+}
+.a-know-more {
+  left: 0;
 }
 
 /* ====================== Restaurant Details ====================== */
@@ -265,7 +266,7 @@ nav h1 a {
   margin: 0 auto;
   min-width: 265px;
 }
-#reviews-form {
+#reviews-form, #add-favorites {
   margin-bottom: 2em;
   padding-bottom: 2em;
   border-bottom: 1px solid #eaeaea;
@@ -279,7 +280,7 @@ nav h1 a {
   font-size: 1.1em;
   margin-bottom: 1em;
 }
-#post-review-btn {
+#post-review-btn, .a-favorite {
   padding: 0.5em 1em;
   font-size: 1.2em;
   border: 0;
