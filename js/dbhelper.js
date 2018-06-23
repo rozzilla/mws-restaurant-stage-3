@@ -26,6 +26,10 @@ class DBHelper {
     return "osOfflineReviews";
   }
 
+  static get FAV_RESTAURANTS_OS() {
+    return "osFavoritesRestaurants";
+  }
+
   /**
    * Return the url to add a restaurant to the favorites
    */

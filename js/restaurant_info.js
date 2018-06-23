@@ -65,14 +65,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const favorites = document.getElementById('add-favorites-box');
 
-  const aFav = document.createElement('a');
-  aFav.innerHTML = '❤ Add to favorites!';
-  aFav.setAttribute("onclick",`addToFavorites(${restaurant.id})`);
-  aFav.setAttribute("id","addto-favorites");
-  aFav.setAttribute("class","color-white backg-green font-center");
-  aFav.setAttribute("title","Add the " + restaurant.name + " restaurant to your favorites!");
-  favorites.append(aFav)
-
   const picture = document.getElementById('restaurant-picture');
 
   const source950px = document.createElement('source');
@@ -99,6 +91,29 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
+
+  openIDB().then(function(db) {
+    var storeRo= getObjectStore(DBHelper.FAV_RESTAURANTS_OS,'readonly',db);
+    storeRo.get(restaurant.id)
+    .then(idbData=>{
+      if(idbData) {
+        const divFav = document.createElement('div');
+        divFav.innerHTML = `<strong>${restaurant.name}</strong> added to favorites ❤`;
+        divFav.setAttribute("class","color-white backg-black font-center");
+        favorites.append(divFav)
+      }
+      else
+      {
+        const aFav = document.createElement('a');
+        aFav.innerHTML = '❤ Add to favorites!';
+        aFav.setAttribute("onclick",`addToFavorites(${restaurant.id})`);
+        aFav.setAttribute("id","addto-favorites");
+        aFav.setAttribute("class","color-white backg-green font-center");
+        aFav.setAttribute("title","Add the " + restaurant.name + " restaurant to your favorites!");
+        favorites.append(aFav)
+      }
+    });
+  });
 
   // fill operating hours
   if (restaurant.operating_hours) {
@@ -286,8 +301,13 @@ function addToFavorites(idRes) {
   fetch(DBHelper.getFavoritePutUrl(idRes),fetchReviewsOption)
   .then(response=> response.json())
   .then(jsonData=>{
-    console.log(jsonData)
-  })
+    openIDB().then(function(db) {
+      var storeRw = getObjectStore(DBHelper.FAV_RESTAURANTS_OS,'readwrite',db);
+      storeRw.put({
+        id: idRes
+      });
+    });
+  }).then(location.reload())
   .catch(e=>{
     console.log("Error on the review POST function. " + e)
   })

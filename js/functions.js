@@ -14,12 +14,6 @@ if('serviceWorker' in navigator) {
 }
 
 function openIDB() {
-	/* Check for browser compatibility
-	if (!('indexedDB' in window)) {
-		console.log('IndexedDB is not supported on this browser');
-		return;
-	}*/
-
 	return idb.open('dbRestaurant', 1, function(upgradeDb){
 		switch(upgradeDb.oldVersion){
 			case 0:
@@ -29,6 +23,8 @@ function openIDB() {
 
 				var objStoReviews = upgradeDb.createObjectStore('osReviews',{keyPath:'id'});
 				objStoReviews.createIndex('restaurant_id','restaurant_id',{unique: false});
+
+				upgradeDb.createObjectStore('osFavoritesRestaurants',{keyPath:'id'});
 			default:
 				break;
 		}

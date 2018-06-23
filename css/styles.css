@@ -278,6 +278,7 @@ nav h1 a {
 #reviews-form > input[type=text], #reviews-form > select, #reviews-form > textarea {
   padding: 0.5em;
   box-sizing: border-box;
+  border: 1px solid #eaeaea;
 }
 #reviews-form-error {
   color: red;
