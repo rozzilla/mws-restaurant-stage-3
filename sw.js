@@ -1,4 +1,4 @@
-self.importScripts("js/idb.js","js/dbhelper.js","js/functions.js");
+self.importScripts("js/common.min.js");
 
 self.addEventListener('fetch', function(event) {
 	if(event.request.url.startsWith(self.registration.scope))
